@@ -1,7 +1,8 @@
 require("dotenv").config();
-const express = require("express");
-const morgan = require("morgan");
-const logger = require("loglevel");
+
+import express from "express";
+import morgan from "morgan";
+import logger from "loglevel";
 
 logger.setDefaultLevel("info");
 logger.setLevel(process.env.LOG_LEVEL || "info");
@@ -14,7 +15,21 @@ const isDev = env !== "production";
 app.use(morgan(isDev ? "dev" : "tiny"));
 
 app.get("/", (req, resp) => {
-	resp.send("Hey! This worked");
+	resp.send("Hello from a compiled node world");
+});
+
+app.get("/ping", async (req, res) => {
+	const healthcheck = {
+		uptime: process.uptime(),
+		message: "OK",
+		timestamp: Date.now(),
+	};
+	try {
+		res.send(healthcheck);
+	} catch (e) {
+		healthcheck.message = e.message;
+		res.status(503).send(healthcheck);
+	}
 });
 
 app.listen(port, () => {
