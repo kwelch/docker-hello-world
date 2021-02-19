@@ -1,0 +1,24 @@
+{
+  "name": "docker-hello-world",
+  "version": "1.0.0",
+  "description": "Test Hello World Docker Image to AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kwelch/docker-hello-world.git"
+  },
+  "keywords": [],
+  "author": "Kyle Welch <kwelch0626@gmail.com> (https://kwelch.dev/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kwelch/docker-hello-world/issues"
+  },
+  "homepage": "https://github.com/kwelch/docker-hello-world#readme",
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "prettier": "^2.2.1"
+  }
+}
