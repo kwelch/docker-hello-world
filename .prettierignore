@@ -1,6 +1,8 @@
 yarn.lock
 node_modules/
 LICENSE
+.nvmrc
 .env
 .gitignore
 .prettierignore
+Dockerfile
