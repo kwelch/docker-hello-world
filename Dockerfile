@@ -1,8 +1,8 @@
 # use node 14 - alpine because it is the recomended image for slim size
-FROM node:14-alpine
+FROM node:14-alpine as builder
 
 # make a dir to include out app from
-RUN mkdir -p /usr/src/app
+RUN mkdir -p /app
 # set that dir as our working directory
 WORKDIR /usr/src/app
 
@@ -12,16 +12,30 @@ COPY package.json yarn.lock ./
 
 # run install
 # fail if lock is out of dock
-# only install prod deps not devDeps
-RUN yarn install --frozen-lockfile --production
+RUN yarn install --frozen-lockfile
 
 # copy the rest of the repo in
 COPY . .
 
-# allow external access to our interal port
-# I don't like that this is hard coded and could get out of sync with the definition else where :sad:
-EXPOSE 3000
+# compile the server to output
+RUN yarn build
 
-# command to run at container start
+
+# MULTI STAGE - NOW, we do the real prod container
+FROM node:14-alpine
+
+# make a dir to include out app from
+RUN mkdir -p /app
+# set that dir as our working directory
+WORKDIR /usr/src/app
+
+COPY package.json yarn.lock ./
+
+# run install
+# fail if lock is out of dock
+# only install prod deps not devDeps, since we are compiled in this stage
+RUN yarn install --frozen-lockfile --production
+
+COPY --from=builder /usr/src/app/dist/ ./
+
 CMD ["yarn", "start"]
-
