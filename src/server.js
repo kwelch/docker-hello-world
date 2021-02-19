@@ -15,7 +15,10 @@ const isDev = env !== "production";
 app.use(morgan(isDev ? "dev" : "tiny"));
 
 app.get("/", (req, resp) => {
-	resp.send("Hello from a compiled node world");
+	resp.send("Testing deployments");
+});
+app.get("/test", (req, resp) => {
+	resp.send("New route");
 });
 
 app.get("/ping", async (req, res) => {
