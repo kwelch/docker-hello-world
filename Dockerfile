@@ -8,17 +8,17 @@ WORKDIR /usr/src/app
 
 # copy just the package and the lock, first
 # this is better for caching the install step in docker
-COPY package.json yarn.lock ./
+COPY package*.json ./
 
 # run install
 # fail if lock is out of dock
-RUN yarn install --frozen-lockfile
+RUN npm ci
 
 # copy the rest of the repo in
 COPY . .
 
 # compile the server to output
-RUN yarn build
+RUN npm run build
 
 
 # MULTI STAGE - NOW, we do the real prod container
@@ -29,13 +29,13 @@ RUN mkdir -p /app
 # set that dir as our working directory
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY package*.json ./
 
 # run install
 # fail if lock is out of dock
 # only install prod deps not devDeps, since we are compiled in this stage
-RUN yarn install --frozen-lockfile --production
+RUN npm ci --production
 
 COPY --from=builder /usr/src/app/dist/ ./
 
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
