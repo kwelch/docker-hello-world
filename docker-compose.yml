@@ -1,0 +1,11 @@
+version: "2"
+services:
+  web:
+    build:
+      context: .
+      target: dev
+    command: npm run dev
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "3000:3000"

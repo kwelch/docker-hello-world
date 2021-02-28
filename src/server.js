@@ -1,30 +1,30 @@
-require("dotenv").config();
+require('dotenv').config();
 
-import express from "express";
-import morgan from "morgan";
-import logger from "loglevel";
+import express from 'express';
+import morgan from 'morgan';
+import logger from 'loglevel';
 
-logger.setDefaultLevel("info");
-logger.setLevel(process.env.LOG_LEVEL || "info");
+logger.setDefaultLevel('info');
+logger.setLevel(process.env.LOG_LEVEL || 'info');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const env = process.env.NODE_ENV || "development";
-const isDev = env !== "production";
+const env = process.env.NODE_ENV || 'development';
+const isDev = env !== 'production';
 
-app.use(morgan(isDev ? "dev" : "tiny"));
+app.use(morgan(isDev ? 'dev' : 'tiny'));
 
-app.get("/", (req, resp) => {
-	resp.send("Testing deployments");
+app.get('/', (req, resp) => {
+	resp.send('Testing deployments');
 });
-app.get("/test", (req, resp) => {
-	resp.send("New route");
+app.get('/test', (req, resp) => {
+	resp.send('test route');
 });
 
-app.get("/ping", async (req, res) => {
+app.get('/ping', async (req, res) => {
 	const healthcheck = {
 		uptime: process.uptime(),
-		message: "OK",
+		message: 'OK',
 		timestamp: Date.now(),
 	};
 	try {
