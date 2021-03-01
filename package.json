@@ -30,6 +30,7 @@
 		"@babel/cli": "^7.12.17",
 		"@babel/node": "^7.12.17",
 		"@babel/preset-env": "^7.12.17",
+		"aws-sdk": "^2.853.0",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"loglevel": "^1.7.1",
