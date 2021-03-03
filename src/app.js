@@ -2,9 +2,8 @@ require('dotenv').config();
 
 import express from 'express';
 import morgan from 'morgan';
-import logger from 'loglevel';
 import AWS from 'aws-sdk';
-import { setupTables } from './setupTables';
+import bodyParser from 'body-parser';
 import { getApplicationsRoute } from './applicationsApi';
 
 AWS.config.update({
@@ -15,15 +14,14 @@ const db = new AWS.DynamoDB({
 	endpoint: process.env.DB_ENDPOINT ?? 'http://localhost:8000',
 });
 
-logger.setDefaultLevel('info');
-logger.setLevel(process.env.LOG_LEVEL || 'info');
-
 const app = express();
-const port = process.env.PORT || 3000;
 const env = process.env.NODE_ENV || 'development';
 const isDev = env !== 'production';
 
+app.locals.db = db;
 app.use(morgan(isDev ? 'dev' : 'tiny'));
+
+app.use(bodyParser.json());
 
 app.get('/', (req, resp) => {
 	resp.send('Testing deployments');
@@ -33,6 +31,7 @@ app.get('/test', (req, resp) => {
 });
 
 app.get('/ping', async (req, res) => {
+	const { db } = app.locals;
 	const healthcheck = {
 		uptime: process.uptime(),
 		message: 'OK',
@@ -51,9 +50,14 @@ app.get('/ping', async (req, res) => {
 	}
 });
 
-app.use('/applications', getApplicationsRoute(db));
+app.use('/applications', getApplicationsRoute());
 
-app.listen(port, async () => {
-	await setupTables(db);
-	logger.info(`Server is up on http://localhost:${port}/`);
+app.use(function errorHandler(err, req, res, next) {
+	if (res.headersSent) {
+		return next(err);
+	}
+	res.status(500);
+	res.render('error', { error: err });
 });
+
+export { app };
